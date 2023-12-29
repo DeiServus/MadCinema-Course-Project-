@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model EmailVerificationLinks {
+  id           Int          @id(map: "PK__EmailVer__3213E83F6D807059") @default(autoincrement())
+  email        String       @unique(map: "UQ__EmailVer__AB6E6164C6A7236A") @db.NVarChar(250)
+  userId       Int          @unique(map: "UQ__EmailVer__CB9A1CFE6CC991FA")
+  user_profile user_profile @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_EmailVerificationLinks_user_profile")
+}
+
+model employee {
+  id             Int              @id(map: "PK__employee__3213E83F6CA24119") @default(autoincrement())
+  name           String           @db.NVarChar(50)
+  birthplace     String           @db.NVarChar(60)
+  birthday       String           @db.NVarChar(250)
+  description    String?          @db.NVarChar(260)
+  image          String?          @db.NVarChar(250)
+  employee_films employee_films[]
+}
+
+model employee_films {
+  id         Int      @id(map: "PK__employee__3213E83F304288D2") @default(autoincrement())
+  employeeId Int
+  filmId     Int
+  position   String   @db.NVarChar(50)
+  employee   employee @relation(fields: [employeeId], references: [id], onUpdate: NoAction, map: "FK_employee_films_employee")
+  films      films    @relation(fields: [filmId], references: [id], onUpdate: NoAction, map: "FK_employee_films_films")
+
+  @@unique([employeeId, filmId, position], map: "UQ__employee__544258A8680CB3F5")
+}
+
+model films {
+  id             Int              @id(map: "PK__films__3213E83F0A6895F5") @default(autoincrement())
+  year           Int
+  duration       Int
+  name           String           @db.NVarChar(50)
+  slogan         String           @db.NVarChar(250)
+  description    String?          @db.NChar(500)
+  age            Int
+  budget         Int
+  charge         Int
+  writer         String?           @db.NVarChar(60)
+  employee_films employee_films[]
+  films_genres   films_genres[]
+  image          image[]
+  reviews        reviews[]
+  user_films     user_films[]
+}
+
+model films_genres {
+  id     Int    @id(map: "PK__films_ge__3213E83FB74F5F29") @default(autoincrement())
+  filmId Int
+  genre  String @db.NVarChar(50)
+  films  films  @relation(fields: [filmId], references: [id], onUpdate: NoAction, map: "FK_films_genres_films")
+
+  @@unique([filmId, genre], map: "UQ__films_ge__4850F55CE77AD0A8")
+}
+
+model image {
+  id      Int     @id(map: "PK__image__3213E83FBFCAE79E") @default(autoincrement())
+  isCover Boolean
+  filmId  Int
+  uri     String  @db.NVarChar(400)
+  films   films   @relation(fields: [filmId], references: [id], onUpdate: NoAction, map: "FK_image_films")
+}
+
+model reviews {
+  id           Int          @id(map: "PK__reviews__3213E83F6B117712") @default(autoincrement())
+  userId       Int
+  filmId       Int
+  text         String?      @db.NVarChar(500)
+  mark         Int
+  rating       Int
+  films        films        @relation(fields: [filmId], references: [id], onUpdate: NoAction, map: "FK_reviews_films")
+  user_profile user_profile @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_reviews_user_profile")
+
+  @@unique([userId, filmId], map: "UQ__reviews__C799730BB10EB3AD")
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B6123C52DA5") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model token {
+  id           Int          @id(map: "PK__token__3213E83F431083A7") @default(autoincrement())
+  userId       Int          @unique(map: "UQ__token__CB9A1CFE4C943FA7")
+  refreshToken String       @unique(map: "UQ__token__D771D24AC86C67AA") @db.NVarChar(255)
+  user_profile user_profile @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_token_user_profile")
+}
+
+model user_films {
+  id           Int          @id(map: "PK__user_fil__3213E83F8ACEF7C9") @default(autoincrement())
+  userId       Int
+  filmId       Int
+  category     String       @db.NVarChar(50)
+  films        films        @relation(fields: [filmId], references: [id], onUpdate: NoAction, map: "FK_user_films_films")
+  user_profile user_profile @relation(fields: [userId], references: [id], onUpdate: NoAction, map: "FK_user_films_user_profile")
+
+  @@unique([userId, filmId, category], map: "UQ__user_fil__056E863749001F7E")
+}
+
+model user_profile {
+  id                     Int                     @id(map: "PK__user_pro__3213E83F888B9122") @default(autoincrement())
+  login                  String                  @db.NVarChar(250)
+  password               String                  @db.NVarChar(250)
+  email                  String                  @db.NVarChar(50)
+  role                   String                  @db.NVarChar(50)
+  isActivated            Boolean?                @default(false, map: "DF__user_prof__isAct__71D1E811")
+  activationLink         String?                 @db.NVarChar(250)
+  image                  String?                 @db.NVarChar(250)
+  isBlocked              Boolean?                @default(false, map: "DF__user_prof__isBlo__2739D489")
+  EmailVerificationLinks EmailVerificationLinks?
+  reviews                reviews[]
+  token                  token?
+  user_films             user_films[]
+}
