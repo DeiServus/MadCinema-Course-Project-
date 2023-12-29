@@ -1,0 +1,36 @@
+.text {
+    height: 55px;
+    width: 350px;
+    font-size: 14pt;
+    border-radius: 14px;
+    border: solid 2px;
+    border-color: var(--border);
+    padding: 12px;
+  }
+  
+  .wrapper {
+    margin-top: 15%;
+  }
+  
+  .container {
+    align-items: center;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+  }
+  
+  .elem {
+    margin-bottom: 15px;
+  }
+
+  .menu-item {
+    font-weight: 500;
+    font-size: 14pt;
+    margin-right: 140px;
+  }
+  
+  .menu-last-item {
+    margin-top: 10px;
+    margin-left: auto;
+  }

@@ -1,0 +1,31 @@
+.movieCatalog {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Создаем 4 колонки */
+  grid-gap: 20px; /* Расстояние между элементами */
+  padding: 20px; /* Паддинг для контейнера */
+ }
+ 
+ .movie {
+  border: 1px solid #ccc; /* Добавляем границу для наглядности */
+  padding: 10px; /* Паддинг внутри каждого фильма */
+  display: flex; /* Используем flexbox для вертикального выравнивания */
+  flex-direction: column; /* Элементы в колонку */
+  align-items: center; /* Выравнивание элементов по горизонтали */
+  justify-content: center; /* Выравнивание элементов по вертикали */
+ }
+ 
+ .movie img {
+  width: 200px; /* Ширина изображения */
+  height: 300px; /* Высота изображения */
+  object-fit: cover; /* Обрезать изображение, чтобы оно заполнило элемент */
+  image-resolution: 500dppx;
+ }
+  
+  .movie h2 {
+    font-size: 20px;
+    margin: 10px 0;
+  }
+  
+  .movie p {
+    font-size: 16px;
+  }
